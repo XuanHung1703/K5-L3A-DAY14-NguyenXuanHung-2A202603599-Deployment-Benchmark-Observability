@@ -113,8 +113,14 @@ X-XSS-Protection: 1; mode=block
 
 *(Làm sau Part 6 — deploy trực tiếp `06-lab-complete/`)*
 
-- **Public URL:** `[TODO: điền URL sau khi deploy lên Railway hoặc Render]`
-- **Screenshot:** `[TODO: screenshots/dashboard.png, screenshots/running.png, screenshots/test.png]`
+- **Platform:** Render (`Oregon (US West)`, Docker Web Service `06-lab-complete/` + Key Value Redis)
+- **Public URL:** https://k5-l3a-day14-nguyenxuanhung-2a202603599.onrender.com
+- **Kết quả tự kiểm trực tiếp:**
+  - `GET /health` → `200` (`{"status":"ok","environment":"production"}`)
+  - `GET /ready` → `200` (`{"status":"ready"}`)
+  - `POST /ask` (không có `X-API-Key`) → `401` (`{"detail":"Invalid or missing API key"}`)
+  - `POST /ask` (có `X-API-Key`) → `200` (chi tiết lệnh tại [DEPLOYMENT.md](DEPLOYMENT.md))
+- **Screenshot:** `screenshots/dashboard.png`, `screenshots/running.png`, `screenshots/test.png`
 - **So sánh `railway.toml` vs `render.yaml`:**
   - **`06-lab-complete/railway.toml` (TOML):** cấu hình ngắn gọn theo từng block `[build]` (`builder = "DOCKERFILE"`, `dockerfilePath = "Dockerfile"`) và `[deploy]` (`healthcheckPath = "/health"`, `restartPolicyType`). Biến môi trường và secret (`AGENT_API_KEY`, `REDIS_URL`) không khai báo trong `railway.toml` mà đặt trực tiếp trên Railway Dashboard hoặc bằng CLI `railway variables set`; `PORT` do Railway tự inject lúc chạy.
   - **`06-lab-complete/render.yaml` (YAML Blueprint):** khai báo đầy đủ Infrastructure-as-Code cho cả danh sách `services` (`type: web`, `runtime: docker`, `healthCheckPath: /health`), có thể định nghĩa luôn `envVars` ngay trong file (biến thường ghi `value`, còn secret như `AGENT_API_KEY`, `REDIS_URL` bắt buộc dùng `sync: false` hoặc `generateValue: true` để tránh hardcode).
